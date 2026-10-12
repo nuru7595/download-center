@@ -115,17 +115,6 @@
     <div class="sub">Download Center</div>
   </header>
 
-  <div class="toolbar">
-    <label class="search">
-      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-      <input id="q" type="search" placeholder="Search files…" autocomplete="off">
-    </label>
-    <button class="all" id="all" title="Download every file in the current view">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg>
-      Download all
-    </button>
-  </div>
-
   <div class="meta"><span>Files</span><span id="shown"></span></div>
   <div class="list" id="list"></div>
 </div>
@@ -197,10 +186,6 @@ function download(btn){
 }
 
 list.addEventListener("click", e=>{ const b = e.target.closest(".dl"); if(b) download(b); });
-$("#q").addEventListener("input", e=>{ term = e.target.value; render(); });
-$("#all").addEventListener("click", async ()=>{
-  for(const f of visible()){ trigger(f); await new Promise(r=>setTimeout(r,600)); }
-});
 
 /* try to auto-detect file sizes (works when served over http/https) */
 async function sizes(){
