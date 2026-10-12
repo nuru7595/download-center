@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Download Center</title>
+<style>
+  :root{
+    --bg:#06080c; --panel:#0c1016; --panel-2:#10151d; --line:#1b222d;
+    --text:#e8edf5; --muted:#7d8898; --a:#5eead4; --b:#818cf8;
+    --grad:linear-gradient(120deg,var(--a),var(--b));
+    --radius:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{color-scheme:dark}
+  body{
+    min-height:100vh;background:var(--bg);color:var(--text);
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    background-image:
+      radial-gradient(600px 300px at 80% -5%,rgba(129,140,248,.14),transparent 70%),
+      radial-gradient(500px 300px at 10% 0%,rgba(94,234,212,.10),transparent 70%),
+      linear-gradient(var(--line) 1px,transparent 1px),
+      linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:auto,auto,48px 48px,48px 48px;
+    background-attachment:fixed;
+  }
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;
+    background:radial-gradient(ellipse at center,transparent 40%,var(--bg) 100%)}
+  .wrap{position:relative;z-index:1;max-width:880px;margin:0 auto;padding:72px 20px 80px}
+
+  header{margin-bottom:36px;text-align:center}
+  header .sub{margin-bottom:0;padding-left:.28em}
+  .status{display:inline-flex;align-items:center;gap:8px;font:500 12px ui-monospace,SFMono-Regular,Menlo,monospace;
+    color:var(--muted);letter-spacing:.08em;text-transform:uppercase;
+    padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:rgba(12,16,22,.7)}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--a);box-shadow:0 0 10px var(--a);animation:pulse 2.4s infinite}
+  @keyframes pulse{50%{opacity:.35}}
+  h1{font-size:clamp(34px,6vw,54px);font-weight:700;letter-spacing:-.03em;line-height:1.05;margin:20px 0 12px}
+  h1.name-hero{font-size:clamp(64px,16vw,128px);letter-spacing:-.05em;line-height:.95;margin:0 0 14px}
+  .sub{font:500 13px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);margin-bottom:18px}
+  h1 span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  header p{color:var(--muted);font-size:16px;max-width:520px;line-height:1.55}
+
+  .toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:20px}
+  .search{flex:1 1 220px;position:relative}
+  .search input{
+    width:100%;height:46px;border-radius:12px;border:1px solid var(--line);background:var(--panel);
+    color:var(--text);padding:0 14px 0 42px;font-size:14px;outline:none;transition:.2s}
+  .search input:focus{border-color:var(--b);box-shadow:0 0 0 3px rgba(129,140,248,.15)}
+  .search svg{position:absolute;left:14px;top:14px;width:18px;height:18px;stroke:var(--muted);fill:none;stroke-width:2}
+  .chips{display:flex;gap:6px;flex-wrap:wrap}
+  .chip{height:46px;padding:0 16px;border-radius:12px;border:1px solid var(--line);background:var(--panel);
+    color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;transition:.2s}
+  .chip:hover{color:var(--text);border-color:#2a3342}
+  .chip.on{color:#06080c;background:var(--grad);border-color:transparent}
+  .all{height:46px;padding:0 18px;border-radius:12px;border:1px solid var(--line);background:var(--panel-2);
+    color:var(--text);font-size:13px;font-weight:600;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:8px}
+  .all:hover{border-color:var(--a);box-shadow:0 0 22px rgba(94,234,212,.15)}
+
+  .meta{display:flex;justify-content:space-between;color:var(--muted);font:12px ui-monospace,Menlo,monospace;
+    letter-spacing:.06em;text-transform:uppercase;margin:0 4px 10px}
+
+  .list{display:flex;flex-direction:column;gap:10px}
+  .file{
+    display:grid;grid-template-columns:48px 1fr auto;gap:16px;align-items:center;
+    padding:14px 16px;border-radius:var(--radius);border:1px solid var(--line);
+    background:linear-gradient(180deg,rgba(16,21,29,.85),rgba(12,16,22,.85));
+    backdrop-filter:blur(6px);transition:transform .2s,border-color .2s,box-shadow .2s;
+    animation:in .5s both}
+  @keyframes in{from{opacity:0;transform:translateY(8px)}}
+  .file:hover{transform:translateY(-2px);border-color:#2b3647;box-shadow:0 10px 40px -12px rgba(94,234,212,.18)}
+  .ico{width:48px;height:48px;border-radius:12px;display:grid;place-items:center;
+    font:700 11px ui-monospace,Menlo,monospace;letter-spacing:.04em;color:var(--a);
+    background:rgba(94,234,212,.07);border:1px solid rgba(94,234,212,.2)}
+  .ico.pdf{color:#fda4af;background:rgba(253,164,175,.07);border-color:rgba(253,164,175,.2)}
+  .ico.apk{color:#86efac;background:rgba(134,239,172,.07);border-color:rgba(134,239,172,.2)}
+  .ico.zip{color:#fcd34d;background:rgba(252,211,77,.07);border-color:rgba(252,211,77,.2)}
+  .ico.doc,.ico.xls,.ico.ppt{color:var(--b);background:rgba(129,140,248,.08);border-color:rgba(129,140,248,.22)}
+  .info{min-width:0}
+  .name{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .desc{font-size:13px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tags{display:flex;gap:8px;margin-top:8px;font:11px ui-monospace,Menlo,monospace;color:var(--muted)}
+  .tags span{padding:2px 8px;border-radius:6px;border:1px solid var(--line)}
+
+  .dl{
+    position:relative;overflow:hidden;height:42px;min-width:128px;padding:0 18px;border-radius:12px;border:0;cursor:pointer;
+    font-weight:600;font-size:13px;color:#06080c;background:var(--grad);
+    display:flex;align-items:center;justify-content:center;gap:8px;transition:.2s}
+  .dl:hover{filter:brightness(1.08);box-shadow:0 0 24px rgba(94,234,212,.35)}
+  .dl:active{transform:scale(.97)}
+  .dl svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .dl .bar{position:absolute;left:0;bottom:0;height:3px;width:0;background:#06080c;opacity:.5}
+  .dl.busy .bar{animation:fill .9s linear forwards}
+  @keyframes fill{to{width:100%}}
+  .dl.done{background:#1a2a26;color:var(--a);box-shadow:inset 0 0 0 1px var(--a)}
+
+  .empty{text-align:center;color:var(--muted);padding:56px 0;border:1px dashed var(--line);border-radius:var(--radius)}
+  footer{margin-top:40px;text-align:center;color:#4a5465;font:12px ui-monospace,Menlo,monospace;letter-spacing:.06em}
+
+  @media(max-width:560px){
+    .wrap{padding-top:44px}
+    .file{grid-template-columns:42px 1fr;gap:12px}
+    .ico{width:42px;height:42px}
+    .dl{grid-column:1/-1;width:100%}
+    .chip,.all{height:42px}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1 class="name-hero"><span>Nuru</span></h1>
+    <div class="sub">Download Center</div>
+  </header>
+
+  <div class="toolbar">
+    <label class="search">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Search files…" autocomplete="off">
+    </label>
+    <button class="all" id="all" title="Download every file in the current view">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg>
+      Download all
+    </button>
+  </div>
+
+  <div class="meta"><span>Files</span><span id="shown"></span></div>
+  <div class="list" id="list"></div>
+</div>
+
+<script>
+/* ============ EDIT YOUR FILES HERE ============
+   file : path relative to this HTML (e.g. "files/finance.pdf") or a full URL
+   type : label shown on the icon (PDF, HTML, APK, ZIP, DOC, XLS, PPT…)
+   cat  : category used by the filter chips
+   size : optional text; leave "" to auto-detect when possible          */
+const FILES = [
+  { name:"Principles of Finance – Exam Tool", desc:"Offline exam practice, works without internet", file:"files/finance-exam.html", type:"HTML", cat:"Study Tools", size:"" },
+  { name:"Principles of Marketing – Exam Tool", desc:"Offline exam practice with quick revision", file:"files/marketing-exam.html", type:"HTML", cat:"Study Tools", size:"" },
+  { name:"ICT – Exam Tool", desc:"Question bank and revision", file:"files/ict-exam.html", type:"HTML", cat:"Study Tools", size:"" },
+  { name:"Bangladesh Studies – Notes", desc:"Chapter-wise printable notes", file:"files/bangladesh-studies.pdf", type:"PDF", cat:"Notes", size:"" },
+  { name:"Study Room App", desc:"Android installer", file:"files/study-room.apk", type:"APK", cat:"Apps", size:"" },
+  { name:"All Resources Bundle", desc:"Everything in one archive", file:"files/all-resources.zip", type:"ZIP", cat:"Bundles", size:"" }
+];
+/* ============================================== */
+
+const $ = s => document.querySelector(s);
+const list = $("#list");
+let term = "";
+
+const icoClass = t => ({PDF:"pdf",APK:"apk",ZIP:"zip",DOC:"doc",DOCX:"doc",XLS:"xls",XLSX:"xls",PPT:"ppt",PPTX:"ppt"})[t.toUpperCase()] || "";
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt = b => b<1024 ? b+" B" : b<1048576 ? (b/1024).toFixed(1)+" KB" : (b/1048576).toFixed(1)+" MB";
+
+function visible(){
+  const t = term.toLowerCase();
+  return FILES.filter(f => (f.name+f.desc+f.type).toLowerCase().includes(t));
+}
+
+function render(){
+  const v = visible();
+  $("#shown").textContent = v.length + " / " + FILES.length;
+  if(!v.length){ list.innerHTML = '<div class="empty">No files match your search.</div>'; return; }
+  list.innerHTML = v.map((f,i)=>`
+    <article class="file" style="animation-delay:${i*50}ms">
+      <div class="ico ${icoClass(f.type)}">${esc(f.type)}</div>
+      <div class="info">
+        <div class="name">${esc(f.name)}</div>
+        <div class="desc">${esc(f.desc||"")}</div>
+        <div class="tags"><span data-size="${FILES.indexOf(f)}">${esc(f.size||"—")}</span></div>
+      </div>
+      <button class="dl" data-i="${FILES.indexOf(f)}">
+        <svg viewBox="0 0 24 24"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg>
+        <span>Download</span><i class="bar"></i>
+      </button>
+    </article>`).join("");
+}
+
+function trigger(f){
+  const a = document.createElement("a");
+  a.href = f.file;
+  a.download = f.file.split("/").pop();
+  a.rel = "noopener";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+function download(btn){
+  const f = FILES[btn.dataset.i];
+  if(btn.classList.contains("busy")) return;
+  btn.classList.add("busy");
+  trigger(f);
+  setTimeout(()=>{
+    btn.classList.remove("busy");
+    btn.classList.add("done");
+    btn.querySelector("span").textContent = "Downloaded";
+    setTimeout(()=>{ btn.classList.remove("done"); btn.querySelector("span").textContent = "Download"; }, 2200);
+  }, 900);
+}
+
+list.addEventListener("click", e=>{ const b = e.target.closest(".dl"); if(b) download(b); });
+$("#q").addEventListener("input", e=>{ term = e.target.value; render(); });
+$("#all").addEventListener("click", async ()=>{
+  for(const f of visible()){ trigger(f); await new Promise(r=>setTimeout(r,600)); }
+});
+
+/* try to auto-detect file sizes (works when served over http/https) */
+async function sizes(){
+  FILES.forEach(async (f,i)=>{
+    if(f.size) return;
+    try{
+      const r = await fetch(f.file,{method:"HEAD"});
+      const n = +r.headers.get("content-length");
+      if(r.ok && n){ f.size = fmt(n); const el = document.querySelector(`[data-size="${i}"]`); if(el) el.textContent = f.size; }
+    }catch(_){}
+  });
+}
+
+render(); sizes();
+</script>
+</body>
+</html>
